@@ -20,5 +20,5 @@ while True:
     c, addr
     rand_int = np.random.normal()
     c.send(str(id) + " " + (str(rand_int) + "\n").encode())
-    time.sleep(0.05)
+    time.sleep(0.01)
     id += 1

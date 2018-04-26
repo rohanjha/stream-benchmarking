@@ -1,30 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-r"""
- Counts words in UTF8 encoded, '\n' delimited text received from the network every second.
- Usage: network_wordcount.py <hostname> <port>
-   <hostname> and <port> describe the TCP server that Spark Streaming would connect to receive data.
-
- To run this on your local machine, you need to first run a Netcat server
-    `$ nc -lk 9999`
- and then run the example
-    `$ bin/spark-submit examples/src/main/python/streaming/network_wordcount.py localhost 9999`
-"""
 from __future__ import print_function
 
 import sys
@@ -32,8 +5,9 @@ import time
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
-def print_at_moment(param, moment):
-    print(str(param) + " -- ts" + str(moment) + ":" + str(int(round(time.time() * 1000))))
+# sanity check
+def print_dp(param):
+    print(str(param[0]) + " " + str(param[1]) + " " + str(param[2]) + " " + str(param[3]))
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -43,12 +17,15 @@ if __name__ == "__main__":
     ssc = StreamingContext(sc, 1)
 
     buckets = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
-    buckets.foreachRDD(lambda rdd: rdd.foreach(lambda val: print_at_moment(val, 1)))
-    counts = buckets.map(lambda val: (val, abs(float(val.split(" ")[1])) > 2))
-    buckets.pprint()
-    buckets.foreachRDD(lambda bucket: bucket.foreach(lambda val: print_at_moment(val, 2)))
-    buckets.foreachRDD(lambda bucket: bucket.foreach(lambda val: print_at_moment(val, 3)))
-    buckets.saveAsTextFiles("text")
-    buckets.foreachRDD(lambda bucket: bucket.foreach(lambda val: print_at_moment(val, 4)))
+    w_1_ts = buckets.map(lambda val: [val, str(int(round(time.time() * 1e8)))]) # adding pre-processing timestamp
+    w_counts = w_1_ts.map(lambda val: [val[0], val[1], abs(float(val[0].split(" ")[1])) > 2]) # processing
+    w_2_ts = w_counts.map(lambda val: [val[0], val[1], str(int(round(time.time() * 1e8))), val[2]]) # adding post-processing and pre-storage timestamp
+    w_2_ts.saveAsTextFiles("text") # storing
+
+    # storage side will take care of the pos-storage timestamps
+
+    # sanity check
+    w_2_ts.foreachRDD(lambda rdd: rdd.foreach(print_dp))
+
     ssc.start()
     ssc.awaitTermination()
