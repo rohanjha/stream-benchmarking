@@ -15,8 +15,10 @@ s.listen(5)
 c, addr = s.accept()
 
 print("Connection accepted from " + repr(addr[1]))
+id = 0
 while True:
-    time.sleep(0.05)
-    c, addr 
+    c, addr
     rand_int = np.random.normal()
-    c.send((str(rand_int) + "\n").encode())
+    c.send(str(id) + " " + (str(rand_int) + "\n").encode())
+    time.sleep(0.05)
+    id += 1

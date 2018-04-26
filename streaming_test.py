@@ -28,15 +28,15 @@ r"""
 from __future__ import print_function
 
 import sys
-
+import time
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
 def print_at_start(param):
-	print("starting op: " + str(param))
+	print("starting op: " + str(param) + " " + str(int(round(time.time() * 1000))))
 
 def print_at_end(param):
-	print("ending op: " + str(param))
+	print("ending op: " + str(param) + " " + str(int(round(time.time() * 1000))))
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
     lines.foreachRDD(lambda rdd: rdd.foreach(print_at_start))
-    counts = lines.flatMap(lambda line: line.split(" ")).map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
+    counts = lines.map(lambda val: (val, abs(float(val.split(" ")[1])) > 2))
     counts.pprint()
     counts.foreachRDD(lambda rdd: rdd.foreach(print_at_end))
 
