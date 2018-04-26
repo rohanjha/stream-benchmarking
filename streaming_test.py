@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import sys
 import time
+import sqlite3
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
