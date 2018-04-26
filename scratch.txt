@@ -1,0 +1,23 @@
+
+        rec = ""
+        while(1):
+            print()
+            rec = self.request.recv(1024).strip()
+            print(rec)
+            if rec == "end" or rec == "":
+                print("breaking")
+                break
+
+            rec_list = pickle.loads(rec)
+            print(rec_list)
+            if (rec_list[len(rec_list) - 1] == "end"):
+                print("ALERT")
+            id = rec_list[0].split(" ")[0]
+            if (int(id) % 100 == 0):
+                print(rec_list)
+
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.connect(('localhost', out_port))
+                for record in partition:
+                    sock.send(pickle.dumps(record))
+                sock.send("end")
