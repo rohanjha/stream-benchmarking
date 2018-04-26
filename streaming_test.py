@@ -13,11 +13,9 @@ def print_dp(param):
         print(str(param[0]) + " " + str(param[1]) + " " + str(param[2]) + " " + str(param[3]))
 
 def send_partition_to_db(partition, out_port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect(('localhost', out_port))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     for record in partition:
-        sock.send(pickle.dumps(record))
-    sock.send("end")
+        sock.sendto(pickle.dumps(record), ('localhost', out_port))
     sock.close()
 
 if __name__ == "__main__":
