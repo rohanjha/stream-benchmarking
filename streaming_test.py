@@ -31,18 +31,6 @@ import sys
 
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
-from pyspark.accumulators import AccumulatorParam
-
-'''
-class Benchmark_Accumulator(AccumulatorParam):
-    def zero(self, initial_value):
-        return [initial_value]
-
-    def add_in_place(self, v1, v2):
-        return v1 + v2
-
-accum = None
-'''
 
 def print_at_start(param):
 	print("starting op: " + str(param))
@@ -56,7 +44,6 @@ if __name__ == "__main__":
         exit(-1)
     sc = SparkContext(appName="PythonStreamingNetworkWordCount")
     ssc = StreamingContext(sc, 1)
-    # accum = sc.accumulator("first string", Benchmark_Accumulator())
 
     lines = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
     lines.foreachRDD(lambda rdd: rdd.foreach(print_at_start))
