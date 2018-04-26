@@ -8,7 +8,8 @@ from pyspark.streaming import StreamingContext
 
 # sanity check
 def print_dp(param):
-    print(str(param[0]) + " " + str(param[1]) + " " + str(param[2]) + " " + str(param[3]))
+    if (int((param[0].split(" "))[0]) % 100 == 0):
+        print(str(param[0]) + " " + str(param[1]) + " " + str(param[2]) + " " + str(param[3]))
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
