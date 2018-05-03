@@ -5,6 +5,9 @@ import sys
 import pickle
 import sqlite3
 import time
+import csv
+
+testing = False
 
 conn = sqlite3.connect("results.db")
 c = conn.cursor()
@@ -14,14 +17,16 @@ c.execute('''CREATE TABLE IF NOT EXISTS results (dp text, ts1 bigint, ts2 bigint
 conn.commit()
 conn.close()
 
-ts_4 = []
+ts_3 = []
 
 class UDPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-        # self.request is the UDP socket connected to the client
-        print("Connection accepted from " + str(self.client_address[1]))
+        # self.request is the UDP socket connected to the
         data = pickle.loads(self.request[0].strip())
-        print("Sample: " + str(data[0]))
+
+        if (testing):
+            print("Connection accepted from " + str(self.client_address[1]))
+            print("Sample: " + str(data[0]))
 
         conn = sqlite3.connect("results.db")
         c = conn.cursor()
@@ -30,13 +35,16 @@ class UDPHandler(SocketServer.BaseRequestHandler):
         conn.close()
 
         first_id = int(data[0][0].split(" ")[0])
-        ts_4.append((first_id, int(round(time.time() * 1e8))))
+        ts_3.append((first_id, int(round(time.time() * 1e8))))
 
 if __name__ == "__main__":
     try:
-        PORT = 9999
-        if (len(sys.argv) > 1):
-        	PORT = int(sys.argv[1])
+        if (len(sys.argv) != 3):
+            print("usage: <port number> <output file name>")
+            exit()
+
+    	PORT = int(sys.argv[1])
+        out_file = sys.argv[2]
 
         HOST = 'localhost'
 
@@ -47,6 +55,7 @@ if __name__ == "__main__":
         # interrupt the program with Ctrl-C
         server.serve_forever()
     finally:
-        f = open('results.txt', 'w')
-        f.write(str(ts_4) + "\n")
-        f.close()
+        with open(out_file,'w') as out:
+            csv_out = csv.writer(out)
+            for row in ts_3:
+                csv_out.writerow(row)

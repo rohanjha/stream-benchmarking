@@ -7,9 +7,16 @@ from pyspark.streaming import StreamingContext
 import socket
 import pickle
 
+testing = False
+
+if (testing):
+    print_interval = 100
+else:
+    print_interval = 500
+
 # sanity check
 def print_dp(param):
-    if (int((param[0].split(" "))[0]) % 100 == 0):
+    if (int((param[0].split(" "))[0]) % print_interval == 0):
         print(str(param[0]) + " " + str(param[1]) + " " + str(param[2]) + " " + str(param[3]))
 
 def send_partition_to_db(partition, out_port):
