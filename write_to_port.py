@@ -10,7 +10,7 @@ if (len(sys.argv) > 1):
 
 TCP_IP = 'localhost'
 
-f = open("nyc_taxi-train.csv")
+f = open("data/nyc_taxi-train.csv")
 reader = csv.reader(f)
 
 data = []

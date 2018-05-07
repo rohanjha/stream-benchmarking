@@ -28,7 +28,7 @@ class UDPHandler(SocketServer.BaseRequestHandler):
             print("Connection accepted from " + str(self.client_address[1]))
             print("Sample: " + str(data[0]))
 
-        conn = sqlite3.connect("results.db")
+        conn = sqlite3.connect("results/results.db")
         c = conn.cursor()
         c.executemany('''INSERT INTO results VALUES (?, ?, ?, ?)''', data)
         conn.commit()
