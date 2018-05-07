@@ -9,7 +9,7 @@ import csv
 
 testing = False
 
-conn = sqlite3.connect("results.db")
+conn = sqlite3.connect("results/results.db")
 c = conn.cursor()
 
 # NOTE: we often want to drop our previous results
