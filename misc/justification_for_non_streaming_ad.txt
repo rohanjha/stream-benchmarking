@@ -1,0 +1,11 @@
+I'm thinking there isn't enough time to reconcile the distributed model of
+spark streaming with the requirement for a time-series ad that the data be
+ordered. Further, there isn't an existing implementation in Spark's MLib of the
+common AD techniques of ARIMA or exponential scaling.
+
+The next steps will be switching datasets to something multivariate but not
+strictly a time-series, such that k-means and logistic regression make sense.
+This begs the question of whether it makes sense to do anomaly detection in a
+streaming context without making use of the data's timestamps. I would argue
+that it does -- that there are scenarios in which you'd want a fast response
+but the data aren't necessarily related to one another.

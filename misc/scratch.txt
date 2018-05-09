@@ -1,0 +1,35 @@
+
+        rec = ""
+        while(1):
+            print()
+            rec = self.request.recv(1024).strip()
+            print(rec)
+            if rec == "end" or rec == "":
+                print("breaking")
+                break
+
+            rec_list = pickle.loads(rec)
+            print(rec_list)
+            if (rec_list[len(rec_list) - 1] == "end"):
+                print("ALERT")
+            id = rec_list[0].split(" ")[0]
+            if (int(id) % 100 == 0):
+                print(rec_list)
+
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.connect(('localhost', out_port))
+                for record in partition:
+                    sock.send(pickle.dumps(record))
+                sock.send("end")
+
+                #w_1_ts = buckets.map(lambda val: [val, str(int(round(time.time() * 1e8)))]) # adding pre-processing timestamp
+                #w_unpickle = w_1_ts.map(lambda val: pickle.loads(val[0]).append(val[1]))
+                #w_counts = w_unpickle.map(lambda val: val.append(process(val, model))) # processing
+                #w_2_ts = w_counts.map(lambda val: val.insert(len(val) - 2, str(int(round(time.time() * 1e8))))) # adding post-processing and pre-storage timestamp
+                #w_2_ts.foreachRDD(lambda rdd: rdd.foreachPartition(lambda partition: send_partition_to_db(partition, out_port))) # storing
+                #buckets.foreachRDD(lambda rdd: rdd.foreachPartition(lambda partition: send_partition_to_db(partition, out_port))) # storing
+
+                # storage side will take care of the post-storage timestamps
+
+                # sanity check
+                #w_2_ts.foreachRDD(lambda rdd: rdd.foreach(print_dp))

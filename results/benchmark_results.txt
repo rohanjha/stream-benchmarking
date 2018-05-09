@@ -1,0 +1,13 @@
+Times in ten-thousandths of a millisecond
+
+--------------------------------------------------------------------------------
+Storage: 1350357.194
+Baseline (threshold): 172.977
+
+
+--------------------------------------------------------------------------------
+Old results:
+
+Baseline -- threshold:
+ - Processing: 435.168
+ - Storage: 3,230,198.582 (roughly 300ms)

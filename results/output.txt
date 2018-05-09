@@ -1,0 +1,9 @@
+2018-05-09 01:07:57 WARN  Utils:66 - Your hostname, rjha-VirtualBox resolves to a loopback address: 127.0.1.1; using 10.0.2.15 instead (on interface enp0s3)
+2018-05-09 01:07:57 WARN  Utils:66 - Set SPARK_LOCAL_IP if you need to bind to another address
+2018-05-09 01:07:58 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+  File "/home/rjha/stream-benchmarking-scratch/stream.py", line 31
+    train_data.append(LabeledPoint(int(row[len(row) - 1]), attributes))
+             ^
+SyntaxError: invalid syntax
+2018-05-09 01:07:58 INFO  ShutdownHookManager:54 - Shutdown hook called
+2018-05-09 01:07:58 INFO  ShutdownHookManager:54 - Deleting directory /tmp/spark-090fb531-6304-4657-81ee-064b1c383fb2

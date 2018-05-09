@@ -1,0 +1,6 @@
+0. Need to find a dataset with many real variables
+1. Modify the baseline for a multivariate context -- re-run
+2. Logistic regression (today)
+3. Streaming logistic regression (tomorrow)
+4. K-means (today)
+5. LSTM over gRPC (tomorrow)
