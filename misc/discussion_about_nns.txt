@@ -1,0 +1,15 @@
+Essentially, Greenhouse has a lookback of m units and a forward prediction
+of n units, and when assessing whether a data point is anomalous, the data
+point must be compared against the average of the n predictions for that point.
+Therefore, a sliding window of size n+m is needed with a movement of one unit
+from one window to the next. This implementation is likely possible within
+Spark Streaming and might be a productive next step, especially when paired with
+a deployed TF model. The performance of the gRPC will be interesting.
+
+An easier system with potentially less overhead might be a CNN that has a
+lookback but can output from that lookback whether a datapoint is anomalous.
+The window would be smaller in this case, and there would be no predictions to
+store.
+
+Windowed programming, however, isn't something I have time to implement at the
+moment. It might be a good next step for the project.

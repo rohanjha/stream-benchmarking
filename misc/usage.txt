@@ -28,7 +28,7 @@
    looking at results: sqlite3 results.db
 
 7. post-organization
-   listening: ~/spark-2.3.0-bin-hadoop2.7/bin/spark-submit --master local[2] usage.py localhost 9998 4444 baseline > results/output.txt
+   listening: ~/spark-2.3.0-bin-hadoop2.7/bin/spark-submit --master local[2] stream.py localhost 9998 4444 baseline > results/output.txt
    writing: python write_to_port.py 9998
    reading: python read_from_spark.py 4444 results/int2.csv
    interval between ts2 and ts3: python results_proc.py results/int1.csv results/int2.csv
