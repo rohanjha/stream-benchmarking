@@ -36,7 +36,7 @@ class UDPHandler(SocketServer.BaseRequestHandler):
         conn.close()
 
         first_id = data[0][0]
-        ts_3.append((first_id, int(round(time.time() * 1e8))))
+        ts_3.append((first_id, str(round(time.time() * 1e8))))
 
 if __name__ == "__main__":
     try:

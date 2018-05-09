@@ -27,22 +27,27 @@ def get_train_data():
         for row in csv_reader:
             attributes = []
             for i in range(len(row) - 1):
-                attributes.append(float(row[i])
+                attributes.append(float(row[i]))
             train_data.append(LabeledPoint(int(row[len(row) - 1]), attributes))
     return train_data
-# training the model if training is required
-def train(model):
-    if (model == "logistic"):
-        train_data = get_train_data()
 
-    elif (not model == "baseline"):
+# training the model if training is required
+def train(model_name, sc):
+    if (model_name == "logistic"):
+        train_data = get_train_data()
+        model = LogisticRegressionWithLBFGS.train(sc.parallelize(train_data))
+        print("Logistic done training")
+        print("Sample prediction: " + str(model.predict([0, 0, 0, 0, 0, 9])))
+    elif (not model_name == "baseline"):
         print("Model not implemented", file=sys.stderr)
         exit(-1)
 
 # processing the data
-def process(val, model):
-    if (model == "baseline"):
+def process(val, model_name):
+    if (model_name == "baseline"):
         return val[1] > 0.8
+    elif (model_name == "logistic"):
+        return model.predict(val[1:len(val)-1])
 
     # shouldn't get here
     return 0
@@ -67,13 +72,13 @@ if __name__ == "__main__":
         exit(-1)
 
     out_port = int(sys.argv[3])
-    model = sys.argv[4]
-
-    # wil also verify the model name
-    train(model)
+    model_name = sys.argv[4]
 
     sc = SparkContext(appName="PythonStreamingNetworkWordCount")
     ssc = StreamingContext(sc, 1)
+
+    # wil also verify the model name
+    train(model_name, sc)
 
     buckets = ssc.socketTextStream(sys.argv[1], int(sys.argv[2]))
     buckets = buckets.map(lambda val: ast.literal_eval(val)) # converting to strings
