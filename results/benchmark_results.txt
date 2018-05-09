@@ -6,6 +6,7 @@ Times in ten-thousandths of a millisecond
 Storage: 1350357.194
 Baseline (threshold): 172.977
 Gradient descent: 283.548
+K-means: 593.940
 
 --------------------------------------------------------------------------------
 Old results:

@@ -8,9 +8,12 @@ import socket
 import pickle
 import ast
 import csv
+import numpy as np
 
 from pyspark.mllib.classification import LogisticRegressionWithLBFGS, LogisticRegressionModel
 from pyspark.mllib.regression import LabeledPoint
+
+from pyspark.mllib.clustering import KMeans, KMeansModel
 
 testing = False
 model = None
@@ -20,7 +23,7 @@ if (testing):
 else:
     print_interval = 500
 
-def get_train_data():
+def get_labeled_points():
     train_data = []
     with open('data/training.csv', 'rb') as csvfile:
         csv_reader = csv.reader(csvfile)
@@ -31,13 +34,30 @@ def get_train_data():
             train_data.append(LabeledPoint(int(row[len(row) - 1]), attributes))
     return train_data
 
+def get_attributes():
+    train_data = []
+    with open('data/training.csv', 'rb') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        for row in csv_reader:
+            attributes = []
+            for i in range(len(row) - 1):
+                attributes.append(float(row[i]))
+            train_data.append(attributes)
+    return train_data
+
+
 # training the model if training is required
 def train(model_name, sc):
     if (model_name == "logistic"):
-        train_data = get_train_data()
+        train_data = get_labeled_points()
         model = LogisticRegressionWithLBFGS.train(sc.parallelize(train_data))
-        print("Logistic done training")
+        print("Done training.")
         print("Sample prediction: " + str(model.predict([0, 0, 0, 0, 0, 9])))
+    elif (model_name == "kmeans"):
+        train_data = get_attributes()
+        model = KMeans.train(sc.parallelize(train_data), 2, maxIterations=10, initializationMode="random")
+        print("Done training.")
+        print(model.clusterCenters)
     elif (not model_name == "baseline"):
         print("Model not implemented", file=sys.stderr)
         exit(-1)
@@ -48,6 +68,10 @@ def process(val, model_name):
         return val[1] > 0.8
     elif (model_name == "logistic"):
         return model.predict(val[1:len(val)-1])
+    elif (model_name == "kmeans"):
+        attributes = np.array(val[1:len(val)-1])
+        min_distance = np.min(np.linalg.norm(model.clusterCenters - attributes, axis=1))
+        return min_distance >= 0.8
 
     # shouldn't get here
     return 0
