@@ -17,7 +17,7 @@ reader = csv.reader(f)
 
 data = []
 for row in reader:
-	data.append([row[0], row[1], row[2], row[3], row[4], row[5]])
+	data.append([float(row[0]), float(row[1]), float(row[2]), float(row[3]), float(row[4]), float(row[5])])
 
 s = socket.socket()
 s.bind((TCP_IP, TCP_PORT))
@@ -30,8 +30,10 @@ while True:
     c, addr
     dp = data[index % len(data)]
     dp.insert(0, index)
-    print(pickle.dumps(dp))
+    #print(pickle.dumps(dp))
 
-    c.send(str(dp))
+    c.send(str(dp).encode() + "\n")
+    # c.send(("hello").encode() + "\n")
+    #c.send(pickle.dumps(dp))
     time.sleep(0.01)
     index += 1

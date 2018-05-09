@@ -13,7 +13,8 @@ conn = sqlite3.connect("results/results.db")
 c = conn.cursor()
 
 # NOTE: we often want to drop our previous results
-c.execute('''CREATE TABLE IF NOT EXISTS results (dp text, ts1 bigint, ts2 bigint, result bit)''')
+c.execute('''CREATE TABLE IF NOT EXISTS results (ind INT, a1 FLOAT, a2 FLOAT, a3 FLOAT, a4 FLOAT, a5 FLOAT, a6 FLOAT, ts1 BIGINT, result BIT, ts2 BIGINT)''')
+
 conn.commit()
 conn.close()
 
@@ -30,11 +31,11 @@ class UDPHandler(SocketServer.BaseRequestHandler):
 
         conn = sqlite3.connect("results/results.db")
         c = conn.cursor()
-        c.executemany('''INSERT INTO results VALUES (?, ?, ?, ?)''', data)
+        c.executemany('''INSERT INTO results VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', data)
         conn.commit()
         conn.close()
 
-        first_id = int(data[0][0].split(" ")[0])
+        first_id = data[0][0]
         ts_3.append((first_id, int(round(time.time() * 1e8))))
 
 if __name__ == "__main__":
